@@ -408,7 +408,9 @@ const PrivacySecurityPage: React.FC = () => {
   const [keyCopied, setKeyCopied] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [decryptionFailed, setDecryptionFailed] = useState(false);
-  const [stepUpAction, setStepUpAction] = useState<ProtectedAction | null>(null);
+  const [stepUpAction, setStepUpAction] = useState<ProtectedAction | null>(
+    null
+  );
 
   // Handle all setting changes
   const updateSetting = useCallback(
@@ -441,7 +443,10 @@ const PrivacySecurityPage: React.FC = () => {
   }, [updateSetting]);
 
   const handleExportKey = async (challengeId?: string) => {
-    if (!challengeId) {setStepUpAction("wallet_export"); return;}
+    if (!challengeId) {
+      setStepUpAction("wallet_export");
+      return;
+    }
     setIsExporting(true);
     setExportError(null);
     setDecryptionFailed(false);
@@ -477,7 +482,10 @@ const PrivacySecurityPage: React.FC = () => {
   };
 
   const handleRegenerateWallet = async (challengeId?: string) => {
-    if (!challengeId) {setStepUpAction("wallet_regeneration"); return;}
+    if (!challengeId) {
+      setStepUpAction("wallet_regeneration");
+      return;
+    }
     setIsRegenerating(true);
     setExportError(null);
     setDecryptionFailed(false);
@@ -494,7 +502,7 @@ const PrivacySecurityPage: React.FC = () => {
         return;
       }
       // Key re-generated — now export it immediately
-          await handleExportKey();
+      await handleExportKey();
     } catch {
       setExportError("Network error — please try again");
     } finally {
@@ -576,7 +584,8 @@ const PrivacySecurityPage: React.FC = () => {
                 Verify Email Address
               </h2>
               <p className="text-muted-foreground italic text-sm mb-4">
-                Confirm your email address to keep account notices and recovery options current.
+                Confirm your email address to keep account notices and recovery
+                options current.
               </p>
               <div className="bg-input flex w-full justify-between px-3 py-4 items-center gap-2 rounded">
                 <span className="text-muted-foreground">
@@ -738,8 +747,11 @@ const PrivacySecurityPage: React.FC = () => {
         onCancel={() => setStepUpAction(null)}
         onApproved={(challengeId, action) => {
           setStepUpAction(null);
-          if (action === "wallet_export") {void handleExportKey(challengeId);}
-          else {void handleRegenerateWallet(challengeId);}
+          if (action === "wallet_export") {
+            void handleExportKey(challengeId);
+          } else {
+            void handleRegenerateWallet(challengeId);
+          }
         }}
       />
     </div>

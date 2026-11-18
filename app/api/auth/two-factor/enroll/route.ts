@@ -4,7 +4,7 @@ import { sql } from "@vercel/postgres";
 import { hash } from "bcryptjs";
 import { verifySession } from "@/lib/auth/verify-session";
 import { encryptSecret, decryptSecret } from "@/lib/security/encrypted-secrets";
-import { consumeRecoveryCode, verifyTotp } from "@/lib/security/step-up";
+import { consumeRecoveryCode, totpVerifier, verifyTotp } from "@/lib/security/step-up";
 import { randomBytes } from "node:crypto";
 import { createRateLimiter } from "@/lib/rate-limit";
 
@@ -60,7 +60,7 @@ export async function PUT(request: NextRequest): Promise<Response> {
   `;
   if (!rows[0]) {return NextResponse.json({ error: "Enrollment expired; start again" }, { status: 410 });}
   const secret = decryptSecret(rows[0].secret_enc, "TOTP");
-  if (!authenticator.verify({ token: body.code.replace(/\s/g, ""), secret, window: 1 })) {
+  if (!totpVerifier.verify({ token: body.code.replace(/\s/g, ""), secret })) {
     return NextResponse.json({ error: "Invalid code" }, { status: 400 });
   }
   const recoveryCodes = Array.from({ length: 10 }, () => randomBytes(6).toString("hex").toUpperCase());

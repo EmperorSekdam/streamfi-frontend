@@ -138,11 +138,10 @@ only) and `custodial_key_legacy_decrypt` while legacy rows remain.
    `npm run migrate:custodial-keys -- --purge-legacy --confirm`. It refuses
    to run while any legacy row remains, and re-verifies each row before
    nulling its backup.
-6. **Retire the static key**. First set `TWO_FA_ENCRYPTION_KEY` to the
-   current `STELLAR_ENCRYPTION_KEY` value: the 2FA module
-   (`routes-f/2fa/_lib/totp.ts`) falls back to `STELLAR_ENCRYPTION_KEY`, and
-   removing it without this would break existing 2FA secrets. After that
-   value no longer decrypts any custodial ciphertext, remove
+6. **Retire the static key**. 2FA secrets are encrypted with their own
+   `TOTP_ENCRYPTION_KEY` / `TOTP_ENCRYPTION_KEYRING_JSON`, so they do not
+   depend on this key. After `STELLAR_ENCRYPTION_KEY` no longer decrypts any
+   custodial ciphertext, remove
    `STELLAR_ENCRYPTION_KEY` from every environment. Any stray legacy row now
    fails closed (`LEGACY_KEY_UNAVAILABLE`).
 

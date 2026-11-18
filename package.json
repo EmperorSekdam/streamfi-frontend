@@ -75,6 +75,7 @@
     "nprogress": "^0.2.0",
     "otplib": "^12.0.1",
     "pg": "^8.23.0",
+    "qrcode.react": "^4.2.0",
     "react": "^19",
     "react-dom": "^19",
     "react-dropzone": "^14.3.8",

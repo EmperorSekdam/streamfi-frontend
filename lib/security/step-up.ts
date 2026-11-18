@@ -11,12 +11,15 @@ export const STEP_UP_ACTIONS = [
 ] as const;
 export type StepUpAction = (typeof STEP_UP_ACTIONS)[number];
 
+// Accept the previous/next 30s step to tolerate authenticator clock drift.
+export const totpVerifier = authenticator.clone({ window: 1 });
+
 export async function verifyTotp(userId: string, code: string): Promise<boolean> {
   const { rows } = await sql`SELECT totp_secret_enc FROM users WHERE id = ${userId} AND totp_enabled = true`;
   if (!rows[0]?.totp_secret_enc) {return false;}
   try {
     const secret = decryptSecret(rows[0].totp_secret_enc, "TOTP");
-    return authenticator.verify({ token: code.replace(/\s/g, ""), secret, window: 1 });
+    return totpVerifier.verify({ token: code.replace(/\s/g, ""), secret });
   } catch {
     return false;
   }
